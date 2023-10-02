@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
   CommandLine CL(argc, argv);
 
   int trigType    = CL.GetInt("trigType", 0);
+  int idCut       = CL.GetInt("idCut", 0);
   bool isMC       = CL.GetBool("isMC", true);
   bool isPbPb     = CL.GetBool("isPbPb", true);
   bool noL1       = CL.GetBool("noL1", false);
@@ -511,7 +512,7 @@ int main(int argc, char *argv[])
       weighting = 1;
     
 
-    float sumIso, sumIso2, maxPt=0, max2Pt=0;
+    float maxPt=0, max2Pt=0;
     int maxPt_i = -1, max2Pt_i = -1;
 
     //cout<<"Loop into the photons in the event."<<endl;
@@ -554,7 +555,6 @@ int main(int argc, char *argv[])
     //std::cout<<"num_of_PE = "<<num_of_PE<<std::endl;
     //std::cout<<"size(*ggHi.phoEt) = "<<size(*ggHi.phoEt)<<std::endl;
     for(int i=0; i < num_of_PE; ++i) {
-
       if(isMC){
         int64_t genID;
         if(isEle){
@@ -588,109 +588,21 @@ int main(int argc, char *argv[])
         max2Pt = Et; 
         max2Pt_i = i;
       }
-
     }
 
     if(maxPt_i==-1) continue;
     if(max2Pt_i==-1&&(isDoubleEle||isDoublePhoton))  continue;
-    sumIso2 = -10000;
-
-    if(isEle==false&&isPbPb&&isDoublePhoton==false)
-      sumIso = (*ggHi.pho_ecalClusterIsoR3)[maxPt_i]+(*ggHi.pho_hcalRechitIsoR3)[maxPt_i]+(*ggHi.pho_trackIsoR3PtCut20)[maxPt_i];
-    else if(isEle==false&&isPbPb==false&&isDoublePhoton==false)
-      sumIso = (*ggHi.pfpIso3subUE)[maxPt_i]+(*ggHi.pfcIso3subUE)[maxPt_i]+(*ggHi.pfnIso3subUE)[maxPt_i];
-    else if(isPbPb&&isDoublePhoton){
-      sumIso = (*ggHi.pho_ecalClusterIsoR3)[maxPt_i]+(*ggHi.pho_hcalRechitIsoR3)[maxPt_i]+(*ggHi.pho_trackIsoR3PtCut20)[maxPt_i];
-      sumIso2 = (*ggHi.pho_ecalClusterIsoR3)[max2Pt_i]+(*ggHi.pho_hcalRechitIsoR3)[max2Pt_i]+(*ggHi.pho_trackIsoR3PtCut20)[max2Pt_i];
-    }else if(isPbPb==false&&isDoublePhoton){
-      sumIso = (*ggHi.pfpIso3subUE)[maxPt_i]+(*ggHi.pfcIso3subUE)[maxPt_i]+(*ggHi.pfnIso3subUE)[maxPt_i];
-      sumIso2 = (*ggHi.pfpIso3subUE)[max2Pt_i]+(*ggHi.pfcIso3subUE)[max2Pt_i]+(*ggHi.pfnIso3subUE)[max2Pt_i];
-    }
 
     //std::cout<<"Photon Selection"<<std::endl;
 
     bool sel_cut = false, sel_cut2 = false;
 
-    if(isPbPb){
-      if(isEle==false&&isDoublePhoton==false){
-        if(isEC==false && abs((*ggHi.phoSCEta)[maxPt_i]) < 1.44 && (*ggHi.phoHoverE)[maxPt_i] < 0.247665 && (*ggHi.phoSigmaIEtaIEta_2012)[maxPt_i] < 0.012186 && (*ggHi.pho_swissCrx)[maxPt_i] < 0.9 && abs((*ggHi.pho_seedTime)[maxPt_i]) < 3 && sumIso <= 11.697505) sel_cut=true;
-        else if(isEB==false && abs((*ggHi.phoSCEta)[maxPt_i]) > 1.57 && abs((*ggHi.phoSCEta)[maxPt_i]) < 2.1 && (*ggHi.phoHoverE)[maxPt_i] < 0.398866 && (*ggHi.phoSigmaIEtaIEta_2012)[maxPt_i] < 0.044998 && (*ggHi.pho_swissCrx)[maxPt_i] < 0.9 && abs((*ggHi.pho_seedTime)[maxPt_i]) < 3 && sumIso < 20.911811) sel_cut=true;
-        else sel_cut = false;
-        sel_cut2 = true;
-      }else if(isDoublePhoton){
-        if(isEC==false && abs((*ggHi.phoSCEta)[maxPt_i]) < 1.44 && (*ggHi.phoHoverE)[maxPt_i] < 0.247665 && (*ggHi.phoSigmaIEtaIEta_2012)[maxPt_i] < 0.012186 && (*ggHi.pho_swissCrx)[maxPt_i] < 0.9 && abs((*ggHi.pho_seedTime)[maxPt_i]) < 3 && sumIso <= 11.697505) sel_cut=true;
-        else if(isEB==false && abs((*ggHi.phoSCEta)[maxPt_i]) > 1.57 && abs((*ggHi.phoSCEta)[maxPt_i]) < 2.1 && (*ggHi.phoHoverE)[maxPt_i] < 0.398866 && (*ggHi.phoSigmaIEtaIEta_2012)[maxPt_i] < 0.044998 && (*ggHi.pho_swissCrx)[maxPt_i] < 0.9 && abs((*ggHi.pho_seedTime)[maxPt_i]) < 3 && sumIso < 20.911811) sel_cut=true;
-        else sel_cut = false;
-      
-        if(isEC==false && abs((*ggHi.phoSCEta)[max2Pt_i]) < 1.44 && (*ggHi.phoHoverE)[max2Pt_i] < 0.247665 && (*ggHi.phoSigmaIEtaIEta_2012)[max2Pt_i] < 0.012186 && (*ggHi.pho_swissCrx)[max2Pt_i] < 0.9 && abs((*ggHi.pho_seedTime)[max2Pt_i]) < 3 && sumIso2 <= 11.697505) sel_cut2=true;
-        else if(isEB==false && abs((*ggHi.phoSCEta)[max2Pt_i]) > 1.57 && abs((*ggHi.phoSCEta)[max2Pt_i]) < 2.1 && (*ggHi.phoHoverE)[max2Pt_i] < 0.398866 && (*ggHi.phoSigmaIEtaIEta_2012)[max2Pt_i] < 0.044998 && (*ggHi.pho_swissCrx)[max2Pt_i] < 0.9 && abs((*ggHi.pho_seedTime)[max2Pt_i]) < 3 && sumIso2 < 20.911811) sel_cut2=true;
-        else sel_cut2 = false;
+    sel_cut = PassCuts(ggHi, maxPt_i, idCut, isEC, isEB, isPbPb, isEle, hiBin);
     
-      }else if(isEle&&isDoubleEle==false){
-        if(hiBin>=0 && hiBin < 60){
-          if(isEC==false && abs((*ggHi.eleEta)[maxPt_i]) < 1.442 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.0135 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.0038 && abs((*ggHi.eledPhiAtVtx)[maxPt_i] )< 0.0376 && (*ggHi.eleHoverEBc)[maxPt_i] < 0.1616 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.0177  && (*ggHi.eleMissHits)[maxPt_i] <= 1 && (*ggHi.eleIP3D)[maxPt_i] < 0.03) sel_cut = true;
-          else if(isEB==false && abs((*ggHi.eleEta)[maxPt_i]) > 1.57 && abs((*ggHi.eleEta)[maxPt_i]) < 2.4 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.0466 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.0063 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.1186 && (*ggHi.eleHoverEBc)[maxPt_i] < 0.1317 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.0201  && (*ggHi.eleMissHits)[maxPt_i] <= 1 && (*ggHi.eleIP3D)[maxPt_i] < 0.03) sel_cut = true;
-          else sel_cut = false;
-        }else if(hiBin>=60 && hiBin < 200){
-          if(isEC==false && abs((*ggHi.eleEta)[maxPt_i]) < 1.442 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.0107 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.0035 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.0327 && (*ggHi.eleHoverEBc)[maxPt_i] < 0.1268 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.0774  && (*ggHi.eleMissHits)[maxPt_i] <= 1 && (*ggHi.eleIP3D)[maxPt_i] < 0.03) sel_cut = true;
-          else if(isEB==false && abs((*ggHi.eleEta)[maxPt_i]) > 1.57 && abs((*ggHi.eleEta)[maxPt_i]) < 2.4 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.0339 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.0067 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.0838 && (*ggHi.eleHoverEBc)[maxPt_i] < 0.0977 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.0193  && (*ggHi.eleMissHits)[maxPt_i] <= 1 && (*ggHi.eleIP3D)[maxPt_i] < 0.03) sel_cut = true;
-          else sel_cut = false;
-        }else{
-          sel_cut = false;
-        }
-        sel_cut2 = true;
-      }else if(isDoubleEle){
-        if(hiBin>=0 && hiBin < 60){
-          if(isEC==false && abs((*ggHi.eleEta)[maxPt_i]) < 1.442 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.0135 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.0038 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.0376 && (*ggHi.eleHoverEBc)[maxPt_i] < 0.1616 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.0177  && (*ggHi.eleMissHits)[maxPt_i] <= 1 && (*ggHi.eleIP3D)[maxPt_i] < 0.03) sel_cut = true;
-          else if(isEB==false && abs((*ggHi.eleEta)[maxPt_i]) > 1.57 && abs((*ggHi.eleEta)[maxPt_i]) < 2.4 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.0466 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.0063 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.1186 && (*ggHi.eleHoverEBc)[maxPt_i] < 0.1317 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.0201  && (*ggHi.eleMissHits)[maxPt_i] <= 1 && (*ggHi.eleIP3D)[maxPt_i] < 0.03) sel_cut = true;
-          else sel_cut = false;
-        }else if(hiBin>=60 && hiBin < 200){
-          if(isEC==false && abs((*ggHi.eleEta)[maxPt_i]) < 1.442 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.0107 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.0035 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.0327 && (*ggHi.eleHoverEBc)[maxPt_i] < 0.1268 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.0774  && (*ggHi.eleMissHits)[maxPt_i] <= 1 && (*ggHi.eleIP3D)[maxPt_i] < 0.03) sel_cut = true;
-          else if(isEB==false && abs((*ggHi.eleEta)[maxPt_i]) > 1.57 && abs((*ggHi.eleEta)[maxPt_i]) < 2.4 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.0339 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.0067 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.0838 && (*ggHi.eleHoverEBc)[maxPt_i] < 0.0977 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.0193  && (*ggHi.eleMissHits)[maxPt_i] <= 1 && (*ggHi.eleIP3D)[maxPt_i] < 0.03) sel_cut = true;
-          else sel_cut = false;
-        }else{
-          sel_cut = false;
-        }
-      
-        if(hiBin>=0 && hiBin < 60){
-          if(isEC==false && abs((*ggHi.eleEta)[max2Pt_i]) < 1.442 && (*ggHi.eleSigmaIEtaIEta_2012)[max2Pt_i] < 0.0135 && abs((*ggHi.eledEtaSeedAtVtx)[max2Pt_i]) < 0.0038 && abs((*ggHi.eledPhiAtVtx)[max2Pt_i]) < 0.0376 && (*ggHi.eleHoverEBc)[max2Pt_i] < 0.1616 && abs((*ggHi.eleEoverPInv)[max2Pt_i]) < 0.0177  && (*ggHi.eleMissHits)[max2Pt_i] <= 1 && (*ggHi.eleIP3D)[max2Pt_i] < 0.03) sel_cut2 = true;
-          else if(isEB==false && abs((*ggHi.eleEta)[max2Pt_i]) > 1.57 && abs((*ggHi.eleEta)[max2Pt_i]) < 2.4 && (*ggHi.eleSigmaIEtaIEta_2012)[max2Pt_i] < 0.0466 && abs((*ggHi.eledEtaSeedAtVtx)[max2Pt_i]) < 0.0063 && abs((*ggHi.eledPhiAtVtx)[max2Pt_i]) < 0.1186 && (*ggHi.eleHoverEBc)[max2Pt_i] < 0.1317 && abs((*ggHi.eleEoverPInv)[max2Pt_i]) < 0.0201  && (*ggHi.eleMissHits)[max2Pt_i] <= 1 && (*ggHi.eleIP3D)[max2Pt_i] < 0.03) sel_cut2 = true;
-          else sel_cut2 = false;
-        }else if(hiBin>=60 && hiBin < 200){
-          if(isEC==false && abs((*ggHi.eleEta)[max2Pt_i]) < 1.442 && (*ggHi.eleSigmaIEtaIEta_2012)[max2Pt_i] < 0.0107 && abs((*ggHi.eledEtaSeedAtVtx)[max2Pt_i]) < 0.0035 && abs((*ggHi.eledPhiAtVtx)[max2Pt_i]) < 0.0327 && (*ggHi.eleHoverEBc)[max2Pt_i] < 0.1268 && abs((*ggHi.eleEoverPInv)[max2Pt_i]) < 0.0774  && (*ggHi.eleMissHits)[max2Pt_i] <= 1 && (*ggHi.eleIP3D)[max2Pt_i] < 0.03) sel_cut2 = true;
-          else if(isEB==false && abs((*ggHi.eleEta)[max2Pt_i]) > 1.57 && abs((*ggHi.eleEta)[max2Pt_i]) < 2.4 && (*ggHi.eleSigmaIEtaIEta_2012)[max2Pt_i] < 0.0339 && abs((*ggHi.eledEtaSeedAtVtx)[max2Pt_i]) < 0.0067 && abs((*ggHi.eledPhiAtVtx)[max2Pt_i]) < 0.0838 && (*ggHi.eleHoverEBc)[max2Pt_i] < 0.0977 && abs((*ggHi.eleEoverPInv)[max2Pt_i]) < 0.0193  && (*ggHi.eleMissHits)[max2Pt_i] <= 1 && (*ggHi.eleIP3D)[max2Pt_i] < 0.03) sel_cut2 = true;
-          else sel_cut2 = false;
-        }else{
-          sel_cut2 = false;
-        }      
-      }else{
-        sel_cut = true;
-        sel_cut2 = true;
-      }
-    }else{
-      if(isEle==false){
-        if(isEC==false && abs((*ggHi.phoSCEta)[maxPt_i]) < 1.44 && (*ggHi.phoHoverE)[maxPt_i] < 0.072266 && (*ggHi.phoSigmaIEtaIEta_2012)[maxPt_i] < 0.010806 && sumIso < 0.416894) sel_cut=true;
-        else if(isEB==false && abs((*ggHi.phoSCEta)[maxPt_i]) > 1.57 && abs((*ggHi.phoSCEta)[maxPt_i]) < 2.1 && (*ggHi.phoHoverE)[maxPt_i] < 0.032548 && (*ggHi.phoSigmaIEtaIEta_2012)[maxPt_i] < 0.027323 && sumIso < 0.970591) sel_cut=true;
-        else sel_cut = false;
-        sel_cut2 = true;
-      }else if(isEle&&isDoubleEle==false){
-        if(isEC==false && abs((*ggHi.eleEta)[maxPt_i]) < 1.442 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.01020 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.00327 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.06055 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.52688 ) sel_cut = true;
-        else if(isEB==false && abs((*ggHi.eleEta)[maxPt_i]) > 1.57 && abs((*ggHi.eleEta)[maxPt_i]) < 2.1 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.02957 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.00490 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.09622 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.14600 ) sel_cut = true;
-        else sel_cut = false;
-        sel_cut2 = true;
-      }else if(isDoubleEle){
-        if(isEC==false && abs((*ggHi.eleEta)[maxPt_i]) < 1.442 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.01020 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.00327 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.06055 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.52688 ) sel_cut = true;
-        else if(isEB==false && abs((*ggHi.eleEta)[maxPt_i]) > 1.57 && abs((*ggHi.eleEta)[maxPt_i]) < 2.1 && (*ggHi.eleSigmaIEtaIEta_2012)[maxPt_i] < 0.02957 && abs((*ggHi.eledEtaSeedAtVtx)[maxPt_i]) < 0.00490 && abs((*ggHi.eledPhiAtVtx)[maxPt_i]) < 0.09622 && abs((*ggHi.eleEoverPInv)[maxPt_i]) < 0.14600 ) sel_cut = true;
-        else sel_cut = false;
-
-        if(isEC==false && abs((*ggHi.eleEta)[max2Pt_i]) < 1.442 && (*ggHi.eleSigmaIEtaIEta_2012)[max2Pt_i] < 0.01020 && abs((*ggHi.eledEtaSeedAtVtx)[max2Pt_i]) < 0.00327 && abs((*ggHi.eledPhiAtVtx)[max2Pt_i]) < 0.06055 && abs((*ggHi.eleEoverPInv)[max2Pt_i]) < 0.52688 ) sel_cut2 = true;
-        else if(isEB==false && abs((*ggHi.eleEta)[max2Pt_i]) > 1.57 && abs((*ggHi.eleEta)[max2Pt_i]) < 2.1 && (*ggHi.eleSigmaIEtaIEta_2012)[max2Pt_i] < 0.02957 && abs((*ggHi.eledEtaSeedAtVtx)[max2Pt_i]) < 0.00490 && abs((*ggHi.eledPhiAtVtx)[max2Pt_i]) < 0.09622 && abs((*ggHi.eleEoverPInv)[max2Pt_i]) < 0.14600 ) sel_cut2 = true;
-        else sel_cut2 = false;
-      }else{
-        sel_cut = true;
-        sel_cut2 = true;
-      }
-    }
+    if(isDoublePhoton||isDoubleEle)
+      sel_cut2 = PassCuts(ggHi, max2Pt_i, idCut, isEC, isEB, isPbPb, isEle, hiBin);
+    else
+      sel_cut2 = true;
 
     if(nocut){
       sel_cut=true;
@@ -709,23 +621,6 @@ int main(int argc, char *argv[])
     
       if(Zmass<60 || Zmass>120) sel_cut = false;
     }
-
-    //std::cout<<"a"<<std::endl;
-/*
-    if(sel_cut&&sel_cut2){
-      //std::cout<<"(*ggHi.phoEt)[maxPt_i] = "<<(*ggHi.phoEt)[maxPt_i]<<std::endl;
-      if(isEle==false&&isDoublePhoton==false)
-        hdenom->Fill((*ggHi.phoEt)[maxPt_i],weighting); 
-      else if(isEle&&isDoubleEle==false)
-        hdenom->Fill((*ggHi.elePt)[maxPt_i],weighting); 
-      else if(isDoubleEle)
-        hdenom->Fill((*ggHi.elePt)[max2Pt_i],weighting); 
-      else if(isDoublePhoton)
-        hdenom->Fill((*ggHi.phoEt)[max2Pt_i],weighting);  
-      count0++;
-    }
-*/
-    //std::cout<<"b"<<std::endl;
 
     for(long unsigned int iT = 0; iT < triggers.size(); iT++){
       hltObject hObj;
@@ -773,7 +668,6 @@ int main(int argc, char *argv[])
           std::cout<<"phoEt = "<<(*ggHi.phoEt)[maxPt_i]<<", phoEta = "<<(*ggHi.phoEta)[maxPt_i]<<", phoPhi = "<<(*ggHi.phoPhi)[maxPt_i]<<std::endl;
           cout<<"phoHoverE = "<<(*ggHi.phoHoverE)[maxPt_i]<<", phoSigmaIEtaIEta_2012 = "<<(*ggHi.phoSigmaIEtaIEta_2012)[maxPt_i]<<endl;
           cout<<"phoR9 = "<<(*ggHi.phoR9)[maxPt_i]<<", pho_swissCrx = "<<(*ggHi.pho_swissCrx)[maxPt_i]<<endl;
-
 
 
           cout<<"Other photon/electrons:"<<endl;
