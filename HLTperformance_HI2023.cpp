@@ -27,6 +27,7 @@
 #include <iomanip>
 
 #include <glob.h>
+#include "HI_EGMCut2023.h"
 
 #include "/afs/cern.ch/user/p/pchou/PhysicsHIZHadron2022/CommonCode/include/CommandLine.h"
 
@@ -54,13 +55,15 @@ int main(int argc, char *argv[])
   bool isL1denom  = CL.GetBool("isL1denom", false);
   
   string folder   = CL.Get("folder", "figs/20230926/");
-  string dataDir  = CL.Get("dataDir", "/eos/cms/store/group/phys_heavyions/wangj/RECO2023/miniaod_HIExpressRawPrime_374322/");
+  //string dataDir  = CL.Get("dataDir", "/eos/cms/store/group/phys_heavyions/wangj/RECO2023/miniaod_HIExpressRawPrime_374322/");
   string filename = CL.Get("filename", "HLTEff_");
   string runtext  = CL.Get("runtext", "Run #### data");
   string suffix   = CL.Get("suffix", "");
   string trigsuf  = CL.Get("trigsuf", "");
   double dRmax    = CL.GetDouble("dRmax", 0.5);
   double GendRmax = CL.GetDouble("GendRmax", 0.1);
+
+  vector<string> dataDir = CL.GetStringVector("dataDir",vector<string>{});
 
   vector<double> PSvec = CL.GetDoubleVector("PSvec",vector<double>{1,1,1});
   vector<double> LPSvec = CL.GetDoubleVector("LPSvec",vector<double>{1,1,1});
@@ -70,7 +73,7 @@ int main(int argc, char *argv[])
   vector<string> triggerobjs;
   vector<string> trigger_names; 
 
-  vector<string> l1list = vector<string>{
+  string l1list[7] = {
     "L1_ZeroBias", //0
     "L1_MinimumBiasHF1_AND_BptxAND", //1
     "L1_SingleEG7_BptxAND", //2
@@ -240,50 +243,60 @@ int main(int argc, char *argv[])
 
   filename+=suffix;
 
-  string frtfile;
+  vector<string> frtfile;
 
   if(isEle==false&&isMC&&isPbPb)
-    frtfile = "~/eos/HIRECO_MINIAOD_CMSSW1321/PbPb_MC_QCDPhoton/Pythia8_QCDPhoton15_HydjetEmbedded_TuneCP5_13_0_12/PbPb_MC_QCDPhoton_13_0_12_mAOD_new/230830_145820/0000/HiForestMiniAOD_*.root";
+    frtfile.push_back("~/eos/HIRECO_MINIAOD_CMSSW1321/PbPb_MC_QCDPhoton/Pythia8_QCDPhoton15_HydjetEmbedded_TuneCP5_13_0_12/PbPb_MC_QCDPhoton_13_0_12_mAOD_new/230830_145820/0000/HiForestMiniAOD_*.root");
   else if(isEle&&isMC&&isPbPb)
-    frtfile = "~/eos/HIRECO_MINIAOD_CMSSW1321/PbPb_MC_Zee/Pythia8_Ze10e10_Embedded_TuneCP5_13_0_12/PbPb_MC_Zee_13_0_12_mAOD_new/230830_145820/0000/HiForestMiniAOD_*.root";
+    frtfile.push_back("~/eos/HIRECO_MINIAOD_CMSSW1321/PbPb_MC_Zee/Pythia8_Ze10e10_Embedded_TuneCP5_13_0_12/PbPb_MC_Zee_13_0_12_mAOD_new/230830_145820/0000/HiForestMiniAOD_*.root");
   else if(isEle==false&&isMC&&isPbPb==false)
-    frtfile = "~/eos/HIRECO_MINIAOD_CMSSW1321/ppref_MC_QCDPhoton/QCDPhoton_TuneCP5_5p36TeV_ppref-pythia8_final_200M/QCDPhoton_TuneCP5_5p36TeV_ppref-pythia8_new_mAOD/230909_162228/0000/*.root";
+    frtfile.push_back("~/eos/HIRECO_MINIAOD_CMSSW1321/ppref_MC_QCDPhoton/QCDPhoton_TuneCP5_5p36TeV_ppref-pythia8_final_200M/QCDPhoton_TuneCP5_5p36TeV_ppref-pythia8_new_mAOD/230909_162228/0000/*.root");
   else if(isEle&&isMC&&isPbPb==false)
-    frtfile = "~/eos/HIRECO_MINIAOD_CMSSW1321/ppref_MC_ZeePU/Zee_TuneCP5_5p36TeV_ppref-pythia8_final_2M/Zee_TuneCP5_5p36TeV_ppref-pythia8_new_mAOD/230821_123934/0000/*.root";
+    frtfile.push_back("~/eos/HIRECO_MINIAOD_CMSSW1321/ppref_MC_ZeePU/Zee_TuneCP5_5p36TeV_ppref-pythia8_final_2M/Zee_TuneCP5_5p36TeV_ppref-pythia8_new_mAOD/230821_123934/0000/*.root");
   else
-    frtfile = dataDir + "/*.root";
+    frtfile = dataDir;
+    //frtfile.insert(std::end(frtfile), std::begin(dataDir), std::end(dataDir));
+    //frtfile = dataDir + "/*.root";
 
-  string hltfile;
+  vector<string>  hltfile;
 
   if(noL1==false&&isEle==false&&isMC&&isPbPb)
-    hltfile = "~/eos_base/HLT_DIGI_CMSSW1321/PbPb_MC_QCDPhoton/Macro/CRAB_UserFiles/PbPb_MC_QCDPhoton_1320V33_Macro/230912_133559/0000/*.root";
+    hltfile.push_back("~/eos_base/HLT_DIGI_CMSSW1321/PbPb_MC_QCDPhoton/Macro/CRAB_UserFiles/PbPb_MC_QCDPhoton_1320V33_Macro/230912_133559/0000/*.root");
   else if(noL1&&isEle==false&&isMC&&isPbPb)
-    hltfile = "~/eos_base/HLT_DIGI_CMSSW1321/PbPb_MC_QCDPhoton/Macro/CRAB_UserFiles/PbPb_MC_QCDPhoton_1320V33_Macro_noL1/230912_134947/0000/*.root";
+    hltfile.push_back("~/eos_base/HLT_DIGI_CMSSW1321/PbPb_MC_QCDPhoton/Macro/CRAB_UserFiles/PbPb_MC_QCDPhoton_1320V33_Macro_noL1/230912_134947/0000/*.root");
   else if(isEle&&isMC&&isPbPb)
-    hltfile = "~/eos_base/HLT_DIGI_CMSSW1321/PbPb_MC_Zee/Macro/CRAB_UserFiles/PbPb_MC_Zee_1320V33_Macro/230912_134817/0000/*.root";
+    hltfile.push_back("~/eos_base/HLT_DIGI_CMSSW1321/PbPb_MC_Zee/Macro/CRAB_UserFiles/PbPb_MC_Zee_1320V33_Macro/230912_134817/0000/*.root");
   
   else if(noL1==false&&isEle==false&&isMC&&isPbPb==false)
-    hltfile = "~/eos_base/HLT_DIGI_CMSSW1321/ppref_MC_QCDPhoton_1320V32/Macro/CRAB_UserFiles/ppref_MC_QCDPhoton_1320V32_tag132X2023_Macro/230911_121651/0000/*.root";
+    hltfile.push_back("~/eos_base/HLT_DIGI_CMSSW1321/ppref_MC_QCDPhoton_1320V32/Macro/CRAB_UserFiles/ppref_MC_QCDPhoton_1320V32_tag132X2023_Macro/230911_121651/0000/*.root");
   else if(noL1&&isEle==false&&isMC&&isPbPb==false)
-    hltfile = "~/eos/HLT_DIGI_CMSSW1321/ppref_MC_QCDPhoton_1320V32/Macro/CRAB_UserFiles/ppref_MC_QCDPhoton_1320V32_tag132X2023_noL1_Macro/230911_161027/0000/*.root";
+    hltfile.push_back("~/eos/HLT_DIGI_CMSSW1321/ppref_MC_QCDPhoton_1320V32/Macro/CRAB_UserFiles/ppref_MC_QCDPhoton_1320V32_tag132X2023_noL1_Macro/230911_161027/0000/*.root");
   else if(isEle&&isMC&&isPbPb==false)
-    hltfile = "~/eos_base/HLT_DIGI_CMSSW1321/ppref_MC_Zee_1320V32/Macro/CRAB_UserFiles/ppref_MC_Zee_1320V32_tag132X2023_Macro/230911_112331/0000/*.root";  
+    hltfile.push_back("~/eos_base/HLT_DIGI_CMSSW1321/ppref_MC_Zee_1320V32/Macro/CRAB_UserFiles/ppref_MC_Zee_1320V32_tag132X2023_Macro/230911_112331/0000/*.root");  
   else
-    hltfile = dataDir + "/*.root";
+    hltfile = dataDir;
+    //hltfile.insert(std::end(hltfile), std::begin(dataDir), std::end(dataDir));
+    //hltfile = dataDir + "/*.root";
 
   std::cout << "Reading files..." << std::endl;
 
+  // For loop over file list
   TChain *HltTree = new TChain("hltanalysis/HltTree");
 
-  for (const auto &filename : my_glob(hltfile.c_str()))
-    HltTree->Add(filename.c_str());
-
+  for(int iF = 0; iF < hltfile.size(); iF++){
+    for (const auto &filename : my_glob(hltfile[iF].c_str()))
+      HltTree->Add(filename.c_str());
+  }
+  
+  
   TChain *EventTree = new TChain("ggHiNtuplizer/EventTree");
   TChain *HiTree = new TChain("hiEvtAnalyzer/HiTree");
 
-  for (const auto &filename : my_glob(frtfile.c_str())){
-    EventTree->Add(filename.c_str());
-    HiTree->Add(filename.c_str());
+  for(int iF = 0; iF < frtfile.size(); iF++){
+    for (const auto &filename : my_glob(frtfile[iF].c_str())){
+      EventTree->Add(filename.c_str());
+      HiTree->Add(filename.c_str());
+    }
   }
   //EventTree->Add(frtfile.c_str());
   //HiTree->Add(frtfile.c_str());
@@ -314,10 +327,12 @@ int main(int argc, char *argv[])
     hnums.push_back(new TH1F(("hnum"+ to_string(iT)).c_str(),"", pt_bin, pt_min, pt_max));
     if(isHLTObj){
       Trees.push_back(new TChain(("hltobject/" + triggers[iT]).c_str()));
-      for (const auto &filename : my_glob(hltfile.c_str())){
-        auto hobjstatus = Trees[iT]->Add(filename.c_str());
-        if(hobjstatus==0)
-          std::cout<<"hobjstatus "<<iT<<" = "<<hobjstatus<<std::endl;
+      for(int iF = 0; iF < hltfile.size(); iF++){
+        for (const auto &filename : my_glob(hltfile[iF].c_str())){
+          auto hobjstatus = Trees[iT]->Add(filename.c_str());
+          if(hobjstatus==0)
+            std::cout<<"hobjstatus "<<iT<<" = "<<hobjstatus<<std::endl;
+        }
       }
       Trees[iT]->SetBranchStatus("*",0);
       Trees[iT]->SetBranchStatus("eta", 1);
@@ -341,15 +356,18 @@ int main(int argc, char *argv[])
   HiTree->SetBranchStatus("*",0);
   HiTree->SetBranchStatus("hiBin",1);
   HiTree->SetBranchStatus("hiHF",1);
+  HiTree->SetBranchStatus("vz",1);
   if(isMC)
     HiTree->SetBranchStatus("weight",1);
 
   ULong64_t       hlt_event;
   Int_t           hlt_lumi, hlt_run, hiBin;
-  Float_t         hiHF, pthat_weight;
+  Float_t         hiHF, pthat_weight, vz;
 
   HiTree->SetBranchAddress("hiBin", &hiBin);
   HiTree->SetBranchAddress("hiHF", &hiHF);
+  HiTree->SetBranchAddress("vz", &vz);
+
   if(isMC)
     HiTree->SetBranchAddress("weight", &pthat_weight);
 
@@ -467,6 +485,8 @@ int main(int argc, char *argv[])
   Int_t counts[100]={0};
   Int_t count0 = 0;
   double PSs[100]={0};
+
+  Int_t N_F[4]={0}, N_M[4]={0};
 
   for (Long64_t j_entry = 0; j_entry < entriesTmp; ++j_entry){
     if (j_entry % 10000 == 0)  {
@@ -622,6 +642,63 @@ int main(int argc, char *argv[])
       if(Zmass<60 || Zmass>120) sel_cut = false;
     }
 
+
+
+    
+
+    if(sel_cut&&sel_cut2&&(*ggHi.phoEt)[maxPt_i]>50&&HLT_Trig[0]==0&&abs((*ggHi.phoSCEta)[maxPt_i]) < 1.442){
+      cout<<"Run:"<<hlt_run<<", LumiBlock: "<<hlt_lumi<<", Event: "<<hlt_event<<endl;
+
+      for(long unsigned int iT = 0; iT < triggers.size(); iT++)
+        std::cout<<triggers[iT]<<trigsuf<<" = "<<HLT_Trig[iT]<<", ";
+
+      cout<<endl;
+
+      for(int iL=3;iL<6;iL++)
+        cout<<l1list[iL]<<" = "<< L1_Trig[iL] <<", ";
+
+      cout<<endl;
+
+      for(int iC=0;iC<4;iC++)
+        cout<<"Pass "<<iC<<" cut: "<<PassCuts(ggHi, maxPt_i, iC, isEC, isEB, isPbPb, isEle, hiBin)<<", ";
+
+      cout<<endl;
+
+      std::cout<<"phoEt = "<<(*ggHi.phoEt)[maxPt_i]<<", phoEta = "<<(*ggHi.phoEta)[maxPt_i]<<", phoPhi = "<<(*ggHi.phoPhi)[maxPt_i]<<std::endl;
+      cout<<"phoHoverE = "<<(*ggHi.phoHoverE)[maxPt_i]<<", phoSigmaIEtaIEta_2012 = "<<(*ggHi.phoSigmaIEtaIEta_2012)[maxPt_i]<<endl;
+      cout<<"phoR9 = "<<(*ggHi.phoR9)[maxPt_i]<<", pho_swissCrx = "<<(*ggHi.pho_swissCrx)[maxPt_i]<<endl;
+      cout<<"hiHF = "<<hiHF<<", hiBin = "<<hiBin<<", vz = "<<vz<<endl;
+
+      cout<<endl;
+
+      cout<<"Other photon/electrons:"<<endl;
+      for(int i=0; i < num_of_PE; ++i) {
+        std::cout<<"phoEt = "<<(*ggHi.phoEt)[i]<<", phoEta = "<<(*ggHi.phoEta)[i]<<", phoPhi = "<<(*ggHi.phoPhi)[i]<<std::endl;
+        cout<<"phoHoverE = "<<(*ggHi.phoHoverE)[i]<<", phoSigmaIEtaIEta_2012 = "<<(*ggHi.phoSigmaIEtaIEta_2012)[i]<<endl;
+        cout<<"phoR9 = "<<(*ggHi.phoR9)[i]<<", pho_swissCrx = "<<(*ggHi.pho_swissCrx)[i]<<endl;
+      }
+
+      cout<<"------------"<<endl;
+    }
+
+
+    for(int iC=0;iC<4;iC++){
+      //cout<<"Pass "<<iC<<" cut: "<<pass_or_not<<", ";
+      //Is Barrel
+      if(abs((*ggHi.phoSCEta)[maxPt_i]) >= 1.442||(*ggHi.phoEt)[maxPt_i]<50)
+        continue;
+
+      bool pass_or_not = PassCuts(ggHi, maxPt_i, iC, isEC, isEB, isPbPb, isEle, hiBin);
+
+      if(!pass_or_not)
+        continue;
+
+      if(HLT_Trig[0]>0)
+        N_F[iC]++;
+      else
+        N_M[iC]++;
+    }
+
     for(long unsigned int iT = 0; iT < triggers.size(); iT++){
       hltObject hObj;
       if(isHLTObj){ 
@@ -629,6 +706,8 @@ int main(int argc, char *argv[])
         Trees[iT]->GetEntry(entryTrig);
       }
       //std::cout<<"c"<<std::endl;
+
+
 
       float drTrig;
 
@@ -662,23 +741,6 @@ int main(int argc, char *argv[])
         //std::cout<<"triggers[iT] = "<<triggers[iT]<<std::endl;
         //std::cout<<"HLT_Trig[iT] = "<<HLT_Trig[iT]<<std::endl;
 
-        if((*ggHi.phoEt)[maxPt_i]>64&&HLT_Trig[iT]==0){
-          cout<<"Run:"<<hlt_run<<", LumiBlock: "<<hlt_lumi<<", Event: "<<hlt_event<<endl;
-          std::cout<<triggers[iT]<<trigsuf<<" = "<<HLT_Trig[iT]<<std::endl;
-          std::cout<<"phoEt = "<<(*ggHi.phoEt)[maxPt_i]<<", phoEta = "<<(*ggHi.phoEta)[maxPt_i]<<", phoPhi = "<<(*ggHi.phoPhi)[maxPt_i]<<std::endl;
-          cout<<"phoHoverE = "<<(*ggHi.phoHoverE)[maxPt_i]<<", phoSigmaIEtaIEta_2012 = "<<(*ggHi.phoSigmaIEtaIEta_2012)[maxPt_i]<<endl;
-          cout<<"phoR9 = "<<(*ggHi.phoR9)[maxPt_i]<<", pho_swissCrx = "<<(*ggHi.pho_swissCrx)[maxPt_i]<<endl;
-
-
-          cout<<"Other photon/electrons:"<<endl;
-          for(int i=0; i < num_of_PE; ++i) {
-            std::cout<<"phoEt = "<<(*ggHi.phoEt)[i]<<", phoEta = "<<(*ggHi.phoEta)[i]<<", phoPhi = "<<(*ggHi.phoPhi)[i]<<std::endl;
-            cout<<"phoHoverE = "<<(*ggHi.phoHoverE)[i]<<", phoSigmaIEtaIEta_2012 = "<<(*ggHi.phoSigmaIEtaIEta_2012)[i]<<endl;
-            cout<<"phoR9 = "<<(*ggHi.phoR9)[i]<<", pho_swissCrx = "<<(*ggHi.pho_swissCrx)[i]<<endl;
-          }
-
-          cout<<"------------"<<endl;
-        }
 
         if(HLT_Trig[iT]>0){
           if(isHLTObj){
@@ -725,6 +787,15 @@ int main(int argc, char *argv[])
   for(long unsigned int iT = 0; iT < triggers.size(); iT++){
     std::cout << ", counts["<<iT<<"] = "<<counts[iT];
   }
+
+  std::cout << std::endl;
+
+  cout<<"N_F[0] = "<<N_F[0]<<", N_M[0] = "<<N_M[0]<<endl;
+  for(int iC=1;iC<4;iC++){
+    cout<<"N_F["<<iC<<"] = "<<N_F[iC]<<", N_M["<<iC<<"] = "<<N_M[iC]<<endl;
+    cout<<"N_F["<<iC<<"]/N_F[0] = "<<(float) N_F[iC]/N_F[0]<<", N_M["<<iC<<"]/N_M[0] = "<<(float) N_M[iC]/N_M[0]<<endl;
+  }
+
   std::cout << std::endl;
 
   std::cout << "###" << std::endl;

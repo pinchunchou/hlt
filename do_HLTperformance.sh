@@ -33,20 +33,22 @@ g++ HLTperformance_HI2023.cpp -o Execute_HLTperformance `root-config --cflags --
 #dataDir=/eos/cms/store/group/phys_heavyions/jviinika/run3RapidValidation/PbPb2023_run374289_HIPhysicsRawPrime0_withDFinder_2023-09-26/0000/
 #dataDir=/eos/cms/store/group/phys_heavyions/jmijusko/run3RapidValidation/PbPb2023_run374322_PhysicsHIPhysicsRawPrime0_withDFinder_2023-09-28/0000/
 #dataDir=/eos/cms/store/group/phys_heavyions/jviinika/run3RapidValidation/PbPb2023_run374345_HIPhysicsRawPrime0_triggerObjects_2023-09-29/CRAB_UserFiles/crab_PbPb2023_run374345_HIPhysicsRawPrime0_triggerObjects_2023-09-29/230930_011704/0000/
-dataDir="/eos/cms/store/group/phys_heavyions/wangj/Forest2023/HIPhysicsRawPrime[3,4,5,6,8,9]/crab_HiForestMINIAOD_230930_HIPhysicsRawPrime[3,4,5,6,8,9]_374354_Dpt2trk1/*/0000/"
-runtext="Run 374354 (5.36 TeV)"
+#dataDir="/eos/cms/store/group/phys_heavyions/wangj/Forest2023/HIPhysicsRawPrime[3,4,5,6,8,9]/crab_HiForestMINIAOD_230930_HIPhysicsRawPrime[3,4,5,6,8,9]_374354_Dpt2trk1/*/0000/"
+
+dataDir="/eos/cms/store/group/phys_heavyions/jviinika/run3RapidValidation/HIPhysicsRawPrime0_HIRun2023A-PromptReco-v1_run374322_2023-09-30/0000/"
+runtext="Run 374322 (5.36 TeV)"
 #folder="figs/20230928/Run374289_HIPhysicsRawPrime0"
-folder="figs/20231001/Run374354_HIPhysicsRawPrime345689"
-logpath="logs/Run2023_374354"
-suffixText="_374354_prompt_isL1denom"
+folder="figs/20231002/Run374322_HIPhysicsRawPrime0"
+logpath="logs/Run2023_374322_pmt_isL1denom"
+suffixText="_374322_prompt_isL1denom"
 drMax=0.5
 
-./Execute_HLTperformance --trigType 0 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "9" --PSvec 1,1,1     --LPSvec 1,1,1 --L1ID 4,4,5 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_0.log 2>${logpath}_0.err < /dev/null &
-./Execute_HLTperformance --trigType 1 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "9" --PSvec 1700,10,1 --LPSvec 3,3,3 --L1ID 2,2,2 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_1.log 2>${logpath}_1.err < /dev/null &
-./Execute_HLTperformance --trigType 2 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "9" --PSvec 1,1,1     --LPSvec 1,1,1 --L1ID 4,4,5 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_2.log 2>${logpath}_2.err < /dev/null &
-./Execute_HLTperformance --trigType 3 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "9" --PSvec 650,5,1   --LPSvec 3,3,3 --L1ID 2,2,2 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_3.log 2>${logpath}_3.err < /dev/null &
-./Execute_HLTperformance --trigType 4 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "9" --PSvec 20,7,1    --LPSvec 3,3,1 --L1ID 2,2,3 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_4.log 2>${logpath}_4.err < /dev/null &
-./Execute_HLTperformance --trigType 5 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "9" --PSvec 1,1,1     --LPSvec 1,1,1 --L1ID 3,4,4 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_5.log 2>${logpath}_5.err < /dev/null &
-./Execute_HLTperformance --trigType 6 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "9" --PSvec 1,1,1     --LPSvec 3,3,3 --L1ID 6,6,6 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_6.log 2>${logpath}_6.err < /dev/null &
-./Execute_HLTperformance --trigType 7 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "9" --PSvec 1,1,1     --LPSvec 3,3,3 --L1ID 6,6,6 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_7.log 2>${logpath}_7.err < /dev/null &
-./Execute_HLTperformance --trigType 8 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "2" --PSvec 1,1,1     --LPSvec 3,3,3 --L1ID 6,6,6 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_8.log 2>${logpath}_8.err < /dev/null &
+./Execute_HLTperformance --trigType 0 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "8" --PSvec 1,1,1     --LPSvec 1,1,1 --L1ID 4,4,5 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_0.log 2>${logpath}_0.err < /dev/null &
+./Execute_HLTperformance --trigType 1 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "8" --PSvec 1700,10,1 --LPSvec 3,3,3 --L1ID 2,2,2 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_1.log 2>${logpath}_1.err < /dev/null &
+./Execute_HLTperformance --trigType 2 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "8" --PSvec 1,1,1     --LPSvec 1,1,1 --L1ID 4,4,5 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_2.log 2>${logpath}_2.err < /dev/null &
+./Execute_HLTperformance --trigType 3 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "8" --PSvec 650,5,1   --LPSvec 3,3,3 --L1ID 2,2,2 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_3.log 2>${logpath}_3.err < /dev/null &
+./Execute_HLTperformance --trigType 4 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "8" --PSvec 20,7,1    --LPSvec 3,3,1 --L1ID 2,2,3 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_4.log 2>${logpath}_4.err < /dev/null &
+./Execute_HLTperformance --trigType 5 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "8" --PSvec 1,1,1     --LPSvec 1,1,1 --L1ID 3,4,4 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_5.log 2>${logpath}_5.err < /dev/null &
+./Execute_HLTperformance --trigType 6 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "8" --PSvec 1,1,1     --LPSvec 3,3,3 --L1ID 6,6,6 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_6.log 2>${logpath}_6.err < /dev/null &
+./Execute_HLTperformance --trigType 7 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "8" --PSvec 1,1,1     --LPSvec 3,3,3 --L1ID 6,6,6 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_7.log 2>${logpath}_7.err < /dev/null &
+./Execute_HLTperformance --trigType 8 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "1" --PSvec 1,1,1     --LPSvec 3,3,3 --L1ID 6,6,6 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_8.log 2>${logpath}_8.err < /dev/null &

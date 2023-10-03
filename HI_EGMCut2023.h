@@ -280,7 +280,7 @@ bool PassElectronCuts_pp(ggHiNtuplizer& ggHi, int idx, int idCut, bool isEC, boo
 
 }
 
-bool PassCuts(ggHiNtuplizer& ggHi, int idx, int idCut = 0, bool isEC, bool isEB, bool isPbPb, bool isEle, int hiBin){
+bool PassCuts(ggHiNtuplizer& ggHi, int idx, int idCut, bool isEC, bool isEB, bool isPbPb, bool isEle, int hiBin){
   if(isPbPb){
     if(isEle)
       return PassElectronCuts_PbPb(ggHi,idx,idCut,isEC,isEB,hiBin);
