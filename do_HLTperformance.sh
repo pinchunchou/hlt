@@ -34,13 +34,23 @@ g++ HLTperformance_HI2023.cpp -o Execute_HLTperformance `root-config --cflags --
 #dataDir=/eos/cms/store/group/phys_heavyions/jmijusko/run3RapidValidation/PbPb2023_run374322_PhysicsHIPhysicsRawPrime0_withDFinder_2023-09-28/0000/
 #dataDir=/eos/cms/store/group/phys_heavyions/jviinika/run3RapidValidation/PbPb2023_run374345_HIPhysicsRawPrime0_triggerObjects_2023-09-29/CRAB_UserFiles/crab_PbPb2023_run374345_HIPhysicsRawPrime0_triggerObjects_2023-09-29/230930_011704/0000/
 #dataDir="/eos/cms/store/group/phys_heavyions/wangj/Forest2023/HIPhysicsRawPrime[3,4,5,6,8,9]/crab_HiForestMINIAOD_230930_HIPhysicsRawPrime[3,4,5,6,8,9]_374354_Dpt2trk1/*/0000/"
+#dataDir="/eos/cms/store/group/phys_heavyions/jviinika/run3RapidValidation/HIPhysicsRawPrime0_HIRun2023A-PromptReco-v1_run374322_2023-09-30/0000/"
 
-dataDir="/eos/cms/store/group/phys_heavyions/jviinika/run3RapidValidation/HIPhysicsRawPrime0_HIRun2023A-PromptReco-v1_run374322_2023-09-30/0000/"
-runtext="Run 374322 (5.36 TeV)"
+dataDir=\"/eos/cms/store/group/phys_heavyions/wangj/Forest2023/HIPhysicsRawPrime9/crab_HiForestMINIAOD_230930_HIPhysicsRawPrime9_374354_Dpt2trk1/231001_011507/0000/*\",
+dataDir+=\"/eos/cms/store/group/phys_heavyions/wangj/Forest2023/HIPhysicsRawPrime8/crab_HiForestMINIAOD_230930_HIPhysicsRawPrime8_374354_Dpt2trk1/231001_011439/0000/*\",
+dataDir+=\"/eos/cms/store/group/phys_heavyions/wangj/Forest2023/HIPhysicsRawPrime6/crab_HiForestMINIAOD_230930_HIPhysicsRawPrime6_374354_Dpt2trk1/231001_011111/0000/*\",
+dataDir+=\"/eos/cms/store/group/phys_heavyions/wangj/Forest2023/HIPhysicsRawPrime5/crab_HiForestMINIAOD_230930_HIPhysicsRawPrime5_374354_Dpt2trk1/231001_010540/0000/*\",
+dataDir+=\"/eos/cms/store/group/phys_heavyions/wangj/Forest2023/HIPhysicsRawPrime4/crab_HiForestMINIAOD_230930_HIPhysicsRawPrime4_374354_Dpt2trk1/231001_010449/0000/*\",
+dataDir+=\"/eos/cms/store/group/phys_heavyions/wangj/Forest2023/HIPhysicsRawPrime3/crab_HiForestMINIAOD_230930_HIPhysicsRawPrime3_374354_Dpt2trk1/231001_010436/0000/*\",
+dataDir+=\"/eos/cms/store/group/phys_heavyions/mstojano/run3RapidValidation/PbPb2023_run374345_HIPhysicsRawPrime1_2023-09-29/HIPhysicsRawPrime1/crab_PbPb2023_run374345_HIPhysicsRawPrime1_2023-09-29/230930_151533/0000/*\"
+#dataDir+=\"/eos/cms/store/group/phys_heavyions/jviinika/run3RapidValidation/HIPhysicsRawPrime0_HIRun2023A-PromptReco-v1_run374322_2023-09-30/0000/*\"
+
+
+runtext="Run 374322,374345,374354 (5.36 TeV)"
 #folder="figs/20230928/Run374289_HIPhysicsRawPrime0"
-folder="figs/20231002/Run374322_HIPhysicsRawPrime0"
-logpath="logs/Run2023_374322_pmt_isL1denom"
-suffixText="_374322_prompt_isL1denom"
+folder="figs/20231003/Run374322_345_354_PromptReco"
+logpath="logs/Run2023_374322_345_354_pmt"
+suffixText="_374322_345_354_prompt"
 drMax=0.5
 
 ./Execute_HLTperformance --trigType 0 --isL1denom true --nocut false --isHLTObj true --isMC false --trigsuf "8" --PSvec 1,1,1     --LPSvec 1,1,1 --L1ID 4,4,5 --dataDir "$dataDir" --suffix "$suffixText" --runtext "$runtext" --folder $folder --dRmax $drMax  > ${logpath}_0.log 2>${logpath}_0.err < /dev/null &
