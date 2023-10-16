@@ -292,8 +292,13 @@ int main(int argc, char *argv[])
   TChain *EventTree = new TChain("ggHiNtuplizer/EventTree");
   TChain *HiTree = new TChain("hiEvtAnalyzer/HiTree");
 
+
   for(int iF = 0; iF < frtfile.size(); iF++){
+    cout<<"frtfile: "<<frtfile[iF].c_str()<<endl;
+    cout<<"size: "<<sizeof(my_glob(frtfile[iF].c_str()))<<endl;
+    //cout<<"file 0: "<<my_glob(frtfile[iF].c_str())[0]<<endl;
     for (const auto &filename : my_glob(frtfile[iF].c_str())){
+      cout<<"filename: "<<filename.c_str()<<endl;
       EventTree->Add(filename.c_str());
       HiTree->Add(filename.c_str());
     }
